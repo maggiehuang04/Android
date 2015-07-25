@@ -1,6 +1,7 @@
 package com.xidian.maggie.weather.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,7 +26,7 @@ import com.xidian.maggie.weather.util.ParseUtil;
 /**
  * Created by maggie on 2015/7/25.
  */
-public class WeatherActivity extends Activity {
+public class WeatherActivity extends Activity implements View.OnClickListener {
     private LinearLayout weatherInfoLayout;
     private TextView cityNameText;
     private TextView publishText;
@@ -41,8 +43,10 @@ public class WeatherActivity extends Activity {
     private String currentDate;
 
     String weatherCode;
-
     SQLiteDatabase db;
+
+    private Button switchCity;
+    private Button refreshWeather;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +64,40 @@ public class WeatherActivity extends Activity {
         temp2Text = (TextView) findViewById(R.id.temp2);
         currentDateText = (TextView) findViewById(R.id.current_date);
 
+        switchCity = (Button) findViewById(R.id.switch_city);
+        refreshWeather = (Button) findViewById(R.id.refresh_weather);
+        switchCity.setOnClickListener(this);
+        refreshWeather.setOnClickListener(this);
+
         String countyCode = getIntent().getStringExtra("county_code");
         if (!TextUtils.isEmpty(countyCode)) {
             publishText.setText("Loading...");
             weatherInfoLayout.setVisibility(View.VISIBLE);
             cityNameText.setVisibility(View.VISIBLE);
             queryWeatherCode(countyCode);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.switch_city:
+                Intent intent = new Intent(this, ChooseAreaActivity.class);
+                intent.putExtra("from_weather_activity", true);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.refresh_weather:
+                publishText.setText("Refreshing...");
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                String weatherCode = prefs.getString("weather_code", "");
+                if (!TextUtils.isEmpty(weatherCode)) {
+                    String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
+                    queryFromServer(address);
+                }
+                break;
+            default:
+                break;
         }
     }
 
