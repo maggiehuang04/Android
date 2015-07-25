@@ -2,7 +2,11 @@ package com.xidian.maggie.weather.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -52,6 +56,16 @@ public class ChooseAreaActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean("city_selected", false)) {
+            Log.d("Weather", "ChooseAreaActivity-->city_selected" + prefs.getBoolean("city_selected", false));
+            Intent intent = new Intent(this, WeatherActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.choose_area);
 
@@ -71,6 +85,13 @@ public class ChooseAreaActivity extends Activity {
                 }else if (currentLevel == LEVEL_CITY){
                     selectedCity = cityList.get(index);
                     queryCounties();
+                }else if (currentLevel == LEVEL_COUNTY) {
+                    String countyCode = countyList.get(index).getCountyCode();
+                    Log.d("Weather", "ChooseAreaActivity-->Got countyCode:" + countyCode);
+                    Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+                    intent.putExtra("county_code", countyCode);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
@@ -78,7 +99,7 @@ public class ChooseAreaActivity extends Activity {
     }
 
     private void queryProvinces() {
-        Log.d("Weather", "Query province info");
+        Log.d("Weather", "Query provinces");
         provinceList = coolWeatherDB.loadProvinces();
         if (provinceList.size() > 0) {
             dataList.clear();
@@ -117,7 +138,6 @@ public class ChooseAreaActivity extends Activity {
         Log.d("MyWeather", "Query counties");
         countyList = coolWeatherDB.loadCounties(selectedCity.getId());
         if (countyList.size() > 0) {
-            Log.d("Weather", "Query counties--> Got countyList");
             dataList.clear();
             for (County county : countyList) {
                 dataList.add(county.getCountyName());
