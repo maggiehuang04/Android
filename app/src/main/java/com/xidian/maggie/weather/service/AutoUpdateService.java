@@ -52,8 +52,7 @@ public class AutoUpdateService extends Service {
 
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         final int eightHours = 8 * 60 * 60 * 1000;
-        final int Secs = 10 * 1000;
-        long triggerTime = SystemClock.elapsedRealtime() + Secs;
+        long triggerTime = SystemClock.elapsedRealtime() + eightHours;
         Intent i = new Intent(this, AutoUpdateReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, i, 0);
         manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime, pendingIntent);
@@ -80,7 +79,7 @@ public class AutoUpdateService extends Service {
     }
 
     public void alertMessage() {
-        Notification notification = new Notification(R.mipmap.ic_launcher,
+        Notification notification = new Notification(R.drawable.message,
                 "Weather message comes", System.currentTimeMillis());
         Intent notificationIntent = new Intent(this, WeatherActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);

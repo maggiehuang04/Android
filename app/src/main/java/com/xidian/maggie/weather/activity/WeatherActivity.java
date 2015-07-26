@@ -173,5 +173,6 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
 
         Intent intent = new Intent(this, AutoUpdateService.class);
         startService(intent);
+
     }
 }
