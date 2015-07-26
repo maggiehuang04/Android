@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.xidian.maggie.weather.R;
 import com.xidian.maggie.weather.db.CoolWeatherHelper;
 import com.xidian.maggie.weather.model.CoolWeatherDB;
+import com.xidian.maggie.weather.service.AutoUpdateService;
 import com.xidian.maggie.weather.util.HttpCallbackListener;
 import com.xidian.maggie.weather.util.HttpUtil;
 import com.xidian.maggie.weather.util.ParseUtil;
@@ -51,6 +52,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.weather_layout);
 
@@ -76,6 +78,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
             cityNameText.setVisibility(View.VISIBLE);
             queryWeatherCode(countyCode);
         }
+
     }
 
     @Override
@@ -102,25 +105,22 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     }
 
     private void queryWeatherCode(String countyCode) {
-        Log.d("Weather", "--->WeatherActivity-->queryWeatherCode");
         CoolWeatherHelper dbHelper = new CoolWeatherHelper(this, "cool_weather", null, 1);
         db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query("County", null, "county_code=?", new String[]{countyCode}, null, null, null);
         if (cursor.moveToFirst())
             do {
                 weatherCode = cursor.getString(cursor.getColumnIndex("weather_code"));
-                Log.d("Weather", "--->WeatherActivity-->queryWeatherCode-->the weather_code is " + weatherCode);
             }
             while (cursor.moveToNext());
         String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
         queryFromServer(address);
     }
 
-    private void queryFromServer(final String address) {
+    public void queryFromServer(final String address) {
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
-                Log.d("Weather", "WeatherActivity-->queryFromServer-->response is:" + response);
                 if (!TextUtils.isEmpty(response)) {
                     ParseUtil.handleWeatherResponse(WeatherActivity.this, response);
                     runOnUiThread(new Runnable() {
@@ -161,10 +161,10 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         publishText.setText("Today " + publishTime + " updated");
         currentDateText.setText(currentDate);
 
-        Log.d("Weather", "WeatherActivity-->cityName is" + cityName);
-
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
 
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 }
