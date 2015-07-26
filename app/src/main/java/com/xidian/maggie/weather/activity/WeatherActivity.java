@@ -1,6 +1,7 @@
 package com.xidian.maggie.weather.activity;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -56,8 +57,6 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.weather_layout);
 
-        Log.d("Weather", "WeatherActivity-->onCreate");
-
         weatherInfoLayout = (LinearLayout) findViewById(R.id.weather_info_layout);
         cityNameText = (TextView) findViewById(R.id.city_name);
         publishText = (TextView) findViewById(R.id.publish_text);
@@ -78,7 +77,15 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
             cityNameText.setVisibility(View.VISIBLE);
             queryWeatherCode(countyCode);
         }
+    }
 
+    @Override
+    protected void onResume() {
+        Log.d("Weather", "onResume");
+        super.onResume();
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.cancel(1);
+        showWeather();
     }
 
     @Override

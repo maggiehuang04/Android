@@ -13,7 +13,7 @@ import com.xidian.maggie.weather.service.AutoUpdateService;
 public class AutoUpdateReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("Weather", "AutoUpdateReceiver");
+//        Log.d("Weather", "AutoUpdateReceiver");
         Intent i = new Intent(context, AutoUpdateService.class);
         context.startService(i);
     }

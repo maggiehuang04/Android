@@ -52,7 +52,7 @@ public class ParseUtil {
             JSONObject jsonObject = new JSONObject(response);
             JSONObject weatherInfo = jsonObject.getJSONObject("weatherinfo");
             String cityName = weatherInfo.getString("city");
-            Log.d("Weather", "ParseUtil-->handleWeatherResponse-->cityName: " + cityName);
+//            Log.d("Weather", "ParseUtil-->handleWeatherResponse-->cityName: " + cityName);
             String weatherCode = weatherInfo.getString("cityid");
             String temp1 = weatherInfo.getString("temp1");
             String temp2 = weatherInfo.getString("temp2");
@@ -71,7 +71,7 @@ public class ParseUtil {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putBoolean("city_selected", true);
-        Log.d("Weather", "ParseUtil-->saveWeatherInfo-->cityName: " + cityName);
+//        Log.d("Weather", "ParseUtil-->saveWeatherInfo-->cityName: " + cityName);
         editor.putString("city_name", cityName);
         editor.putString("weather_code", weatherCode);
         editor.putString("temp1", temp1);
