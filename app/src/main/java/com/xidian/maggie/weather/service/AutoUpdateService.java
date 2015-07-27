@@ -50,6 +50,7 @@ public class AutoUpdateService extends Service {
             }
         }).start();
 
+//        设置定时器
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         final int eightHours = 8 * 60 * 60 * 1000;
         long triggerTime = SystemClock.elapsedRealtime() + eightHours;
@@ -59,6 +60,7 @@ public class AutoUpdateService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
+//    同步天气信息
     public void updateWeather() {
         Log.d("Weather", "update weather");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -78,12 +80,13 @@ public class AutoUpdateService extends Service {
         }
     }
 
+//  后台更新完天气信息后，推送消息到下拉菜单
     public void alertMessage() {
         Notification notification = new Notification(R.drawable.message,
                 "Weather message comes", System.currentTimeMillis());
         Intent notificationIntent = new Intent(this, WeatherActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        notification.setLatestEventInfo(this, "Weather", "completed auto updating", pendingIntent);
+        notification.setLatestEventInfo(this, "Weather", "completed updating weather info", pendingIntent);
         startForeground(1, notification);
         Log.d("Weather", "alert message---!");
     }

@@ -13,7 +13,7 @@ import com.xidian.maggie.weather.service.AutoUpdateService;
 public class AutoUpdateReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-//        Log.d("Weather", "AutoUpdateReceiver");
+//        启动Service，与之形成一个定时的无限循环调用
         Intent i = new Intent(context, AutoUpdateService.class);
         context.startService(i);
     }

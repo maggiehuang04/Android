@@ -53,6 +53,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("Weatehr", "WeatherActivity--> onCreate");
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.weather_layout);
@@ -70,6 +71,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         switchCity.setOnClickListener(this);
         refreshWeather.setOnClickListener(this);
 
+//      得到由ChooseActivity传入的countycode
         String countyCode = getIntent().getStringExtra("county_code");
         if (!TextUtils.isEmpty(countyCode)) {
             publishText.setText("Loading...");
@@ -77,12 +79,15 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
             cityNameText.setVisibility(View.VISIBLE);
             queryWeatherCode(countyCode);
         }
+
+
     }
 
     @Override
     protected void onResume() {
-        Log.d("Weather", "onResume");
+        Log.d("Weather", "WeatherActivity --> onResume");
         super.onResume();
+
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager.cancel(1);
         showWeather();
@@ -92,6 +97,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.switch_city:
+                //用户点击切换按钮，进入ChooseActivity，并传入参数“from_weather_activity”
                 Intent intent = new Intent(this, ChooseAreaActivity.class);
                 intent.putExtra("from_weather_activity", true);
                 startActivity(intent);
@@ -111,6 +117,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         }
     }
 
+//    根据countyCode在SQLite数据库中查询对应的weathercode
     private void queryWeatherCode(String countyCode) {
         CoolWeatherHelper dbHelper = new CoolWeatherHelper(this, "cool_weather", null, 1);
         db = dbHelper.getReadableDatabase();
@@ -124,6 +131,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         queryFromServer(address);
     }
 
+//    根据网址到天气服务器获取天气信息
     public void queryFromServer(final String address) {
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
             @Override
@@ -152,6 +160,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         });
     }
 
+//    从SharedReferences里取出天气信息，并进行显示
     private void showWeather() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this);
         cityName = prefs.getString("city_name", "");

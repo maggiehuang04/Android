@@ -10,6 +10,7 @@ import java.net.URL;
 /**
  * Created by maggie on 2015/7/23.
  */
+//进行Http设置访问，并将从网站得到的返回信息存入response
 public class HttpUtil {
     public static void sendHttpRequest(final String address, final HttpCallbackListener listener) {
         new Thread(new Runnable() {

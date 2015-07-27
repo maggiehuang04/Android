@@ -57,7 +57,7 @@ public class MyContentHandler extends DefaultHandler {
         tagName = localName;
 
         if (tagName.equals("province")) {
-            //set provinces
+            //  开始解析province标签，将该标签的属性存入province对象
             for (int i = 0; i < attributes.getLength(); i++) {
                 switch (attributes.getLocalName(i)) {
                     case "id":
@@ -77,7 +77,7 @@ public class MyContentHandler extends DefaultHandler {
                 }
             }
         }else if (tagName.equals("city")) {
-        //set citis
+        //开始解析city标签，将解析到的属性存入city对象中
             for (int i = 0; i < attributes.getLength(); i++) {
                 switch (attributes.getLocalName(i)) {
                     case "id":
@@ -96,7 +96,7 @@ public class MyContentHandler extends DefaultHandler {
                 }
             }
         }else if (tagName.equals("county")) {
-            //set counties
+            //开始解析county标签，将解析到的属性存入到county对象中
             for (int i = 0; i < attributes.getLength(); i++) {
                 switch (attributes.getLocalName(i)) {
                     case "id":
@@ -119,20 +119,21 @@ public class MyContentHandler extends DefaultHandler {
         }
     }
 
+//    每当结束解析一个标签，将该对象保存至SQLite数据库
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         CoolWeatherDB coolWeatherDB = CoolWeatherDB.getInstance(mContext);
         if (localName.equals("province")) {
             coolWeatherDB.saveProvince(province);
-            Log.d("Weather", "MyContentHandler-->saveProvince:" + province.getProvinceName());
+//            Log.d("Weather", "MyContentHandler-->saveProvince:" + province.getProvinceName());
         }else if (localName.equals("city")) {
             coolWeatherDB.saveCity(city);
-            Log.d("Weather", "MyContentHandler-->saveCity: " + city.getCityName());
+//            Log.d("Weather", "MyContentHandler-->saveCity: " + city.getCityName());
         }else if (localName.equals("county")) {
             coolWeatherDB.saveCounty(county);
-            Log.d("Weather", "MyContentHandler-->saveCounty: " + county.getCountyName());
+//            Log.d("Weather", "MyContentHandler-->saveCounty: " + county.getCountyName());
         }else if (localName.equals("china")) {
-            Log.d("Weather", "MyContentHandler-->completed!");
+//            Log.d("Weather", "MyContentHandler-->completed!");
         }
     }
 

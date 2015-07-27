@@ -60,8 +60,9 @@ public class ChooseAreaActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        //只有选择了城市且不是由WeatherActivity中跳转过来的
         if (prefs.getBoolean("city_selected", false) && !isFromWeatherActivity) {
             Intent intent = new Intent(this, WeatherActivity.class);
             startActivity(intent);
@@ -91,6 +92,8 @@ public class ChooseAreaActivity extends Activity {
                 }else if (currentLevel == LEVEL_COUNTY) {
                     String countyCode = countyList.get(index).getCountyCode();
                     Log.d("Weather", "ChooseAreaActivity-->Got countyCode:" + countyCode);
+
+//                    根据选定的county转入Weather界面，并传入countycode
                     Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
                     intent.putExtra("county_code", countyCode);
                     startActivity(intent);
@@ -101,6 +104,7 @@ public class ChooseAreaActivity extends Activity {
         queryProvinces();
     }
 
+//  从本地SQLite数据库中读取所有省列表
     private void queryProvinces() {
         Log.d("Weather", "Query provinces");
         provinceList = coolWeatherDB.loadProvinces();
@@ -118,6 +122,7 @@ public class ChooseAreaActivity extends Activity {
         }
     }
 
+//    从本地SQLite数据库中读取对应省下的city列表
     private void queryCities() {
         Log.d("Weather", "Query cities");
         cityList = coolWeatherDB.loadCities(selectedProvince.getId());
@@ -137,6 +142,7 @@ public class ChooseAreaActivity extends Activity {
         }
     }
 
+//    从本地SQLite数据库中读取对应城市下的county列表
     private void queryCounties() {
         Log.d("MyWeather", "Query counties");
         countyList = coolWeatherDB.loadCounties(selectedCity.getId());
@@ -155,7 +161,7 @@ public class ChooseAreaActivity extends Activity {
     }
 
 
-
+//    获得所有城市列表及其对应的代码
     private void queryFromServer(final String code, final String type) {
         String address;
         if (!TextUtils.isEmpty(code)) {
@@ -201,6 +207,7 @@ public class ChooseAreaActivity extends Activity {
         });
     }
 
+//    开启进度条
     private void showProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
@@ -210,6 +217,7 @@ public class ChooseAreaActivity extends Activity {
         progressDialog.show();
     }
 
+//    关闭进度条
     private void closeProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
@@ -223,6 +231,7 @@ public class ChooseAreaActivity extends Activity {
         }else if (currentLevel == LEVEL_CITY) {
             queryProvinces();
         } else {
+            //当点击Back键时，如果是从WeatherActivity跳转过来的，则应该重新回到WeatherActivity
             if (isFromWeatherActivity) {
                 Intent intent = new Intent(this, WeatherActivity.class);
                 startActivity(intent);

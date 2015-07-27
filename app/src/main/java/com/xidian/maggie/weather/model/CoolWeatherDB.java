@@ -23,12 +23,13 @@ public class CoolWeatherDB {
 
     private SQLiteDatabase db;
 
+//    将构造方法私有化
     private CoolWeatherDB(Context context) {
         CoolWeatherHelper dbHelper = new CoolWeatherHelper(context, DB_NAME, null, VERSION);
         db = dbHelper.getWritableDatabase();
     }
 
-    //   get instance of CoolWeatherDB
+    //  获取一个CollWeatherDB实例
     public synchronized static CoolWeatherDB getInstance(Context context) {
         if (coolWeatherDB == null) {
             coolWeatherDB = new CoolWeatherDB(context);
@@ -36,7 +37,7 @@ public class CoolWeatherDB {
         return coolWeatherDB;
     }
 
-    //  save provinces info into database
+    //传入一个province对象，将该对象存入SQLite数据库
     public void saveProvince(Province province) {
         if (province != null) {
             ContentValues values = new ContentValues();
@@ -46,7 +47,7 @@ public class CoolWeatherDB {
         }
     }
 
-    //    Get all provinces information of database
+    //查询SQLite数据库，将所有的province对象放入一个List作为返回
     public List<Province> loadProvinces() {
         List<Province> list = new ArrayList<Province>();
         Cursor cursor = db.query("Province", null, null, null, null, null, null);
@@ -66,7 +67,7 @@ public class CoolWeatherDB {
     }
 
 
-    //    save city info into database
+    //传入一个city对象，将该对象存入SQLite数据库
     public void saveCity(City city) {
         if (city != null) {
             ContentValues values = new ContentValues();
@@ -77,7 +78,7 @@ public class CoolWeatherDB {
         }
     }
 
-    //    load info of cities of specified province
+    //接收一个provinceId参数，根据该参数进行查询SQLite数据库，将所有city对象放入一个List作为返回
     public List<City> loadCities(int provinceId) {
         Log.d("Weather", "LoadCities with the provinceId of " + provinceId);
         List<City> list = new ArrayList<City>();
@@ -100,7 +101,7 @@ public class CoolWeatherDB {
         return list;
     }
 
-    //save county info into database
+    //传入一个county对象，将该对象存入SQLite数据库
     public void saveCounty(County county) {
         if (county != null) {
             ContentValues values = new ContentValues();
@@ -112,7 +113,7 @@ public class CoolWeatherDB {
         }
     }
 
-//   load county info from database
+// 接收一个cityId参数，并根据该参数进行查询SQLite数据库，将得到的city对象放入List中作为返回
     public List<County> loadCounties(int cityId) {
         List<County> list = new ArrayList<County>();
         Cursor cursor = db.query("County", null, "city_id=?",

@@ -33,6 +33,7 @@ import javax.xml.parsers.SAXParserFactory;
  */
 public class ParseUtil {
 
+//  采用SAX解析xml文件
     public synchronized static boolean parseWithSAX(Context context, String response) {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -47,6 +48,7 @@ public class ParseUtil {
         return false;
     }
 
+//    解析JSON格式的weatherInfo，调用saveWeatherInfo方法，将天气信息进行存储
     public static void handleWeatherResponse(Context context, String response) {
         try {
             JSONObject jsonObject = new JSONObject(response);
@@ -64,6 +66,7 @@ public class ParseUtil {
         }
     }
 
+//  将解析完的天气信息存入SharedPreference
     public static void saveWeatherInfo(Context context, String cityName, String weatherCode,
                                        String temp1, String temp2,
                                        String weatherDesp, String publishTime) {
